@@ -4,43 +4,64 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 import web.springframework.spring5webapp.domain.Author;
 import web.springframework.spring5webapp.domain.Book;
+import web.springframework.spring5webapp.domain.Publisher;
 import web.springframework.spring5webapp.repositories.AuthorRepository;
 import web.springframework.spring5webapp.repositories.BookRepository;
+import web.springframework.spring5webapp.repositories.PublisherRepository;
 
 @Component
 public class BootStrapData implements CommandLineRunner {
 
     private final AuthorRepository authorRepository;
     private final BookRepository bookRepository;
+    private final PublisherRepository publisherRepository;
 
 
-    public BootStrapData(AuthorRepository authorRepository, BookRepository bookRepository) {
+    public BootStrapData(AuthorRepository authorRepository, BookRepository bookRepository, PublisherRepository publisherRepository) {
         this.authorRepository = authorRepository;
         this.bookRepository = bookRepository;
+        this.publisherRepository = publisherRepository;
     }
 
     @Override
     public void run(String... args) throws Exception {
 
-        Book book = new Book("domain driven design","1234");
-        Author author =new Author("eric","evans");
-        author.getBooks().add(book);
-        book.getAuthors().add(author);
+        System.out.println("Started in Bootstrap");
 
-        authorRepository.save(author);
-        bookRepository.save(book);
+        Publisher publisher = new Publisher();
+        publisher.setName("SFG Publishing");
+        publisher.setCity("St Petersburg");
+        publisher.setState("FL");
 
-        Book book2 = new Book("art of war","1234");
-        Author author2 =new Author("sun","tzu");
-        author2.getBooks().add(book2);
-        book2.getAuthors().add(author2);
+        publisherRepository.save(publisher);
 
-        authorRepository.save(author2);
-        bookRepository.save(book2);
+        System.out.println("Publisher Count: " + publisherRepository.count());
 
-        System.out.println("Started in bootstrap");
-        System.out.println("Number of books" +bookRepository.count());
+        Author eric = new Author("Eric", "Evans");
+        Book ddd = new Book("Domain Driven Design", "123123");
+        eric.getBooks().add(ddd);
+        ddd.getAuthors().add(eric);
 
+        ddd.setPublisher(publisher);
+        publisher.getBooks().add(ddd);
 
+        authorRepository.save(eric);
+        bookRepository.save(ddd);
+        publisherRepository.save(publisher);
+
+        Author rod = new Author("Rod", "Johnson");
+        Book noEJB = new Book("J2EE Development without EJB", "3939459459");
+        rod.getBooks().add(noEJB);
+        noEJB.getAuthors().add(rod);
+
+        noEJB.setPublisher(publisher);
+        publisher.getBooks().add(noEJB);
+
+        authorRepository.save(rod);
+        bookRepository.save(noEJB);
+        publisherRepository.save(publisher);
+
+        System.out.println("Number of Books: " + bookRepository.count());
+        System.out.println("Publisher Number of Books: " + publisher.getBooks().size());
     }
 }

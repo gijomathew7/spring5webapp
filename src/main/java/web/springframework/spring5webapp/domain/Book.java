@@ -13,15 +13,20 @@ public class Book {
     private String title;
     private String isbn;
 
+    public Book(){
+
+    }
+    @ManyToOne
+    private Publisher publisher;
+
     @ManyToMany
     @JoinTable(name = "author_book",joinColumns = @JoinColumn(name= "book_id"),
     inverseJoinColumns =@JoinColumn(name = "author_id") )
     private Set<Author> authors = new HashSet<>();
 
-    public Book(String title, String isbn/*, Set<Author> authors*/) {
+    public Book(String title, String isbn) {
         this.title = title;
         this.isbn = isbn;
-        //this.authors = authors;
     }
 
     public String getTitle() {
@@ -66,6 +71,14 @@ public class Book {
                 '}';
     }
 
+    public Publisher getPublisher() {
+        return publisher;
+    }
+
+    public void setPublisher(Publisher publisher) {
+        this.publisher = publisher;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -80,4 +93,5 @@ public class Book {
     public int hashCode() {
         return (int) (id ^ (id >>> 32));
     }
+
 }
